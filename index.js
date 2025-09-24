@@ -11,20 +11,14 @@ const DEFECTIVE_PANEL_ID = 3;
 // Gerar códigos únicos para cada placa (pode ser alfanumérico)
 const panelCodes = Array.from({ length: NUM_PANELS }, (_, i) => `PLACA-${i + 1}`);
 
-// Função para simular curva solar
-function generateSolarCurve(panelId) {
-  const now = new Date();
-  const hour = now.getHours() + now.getMinutes() / 60;
+// Função para simular energia gerada (sem curva solar)
+function generateEnergy(panelId) {
+  if (panelId === DEFECTIVE_PANEL_ID) return 0;
 
-  let production = 0;
-  if (hour >= 6 && hour <= 18) {
-    const x = ((hour - 6) / 12) * Math.PI;
-    production = Math.sin(x); // 0 → 1 → 0
-  }
-
-  const base = 2 + panelId * 0.5;
-  const variation = Math.random() * 0.3;
-  const energy = (production * (base + variation)).toFixed(2);
+  // Geração aleatória entre 1 e 5 kWh
+  const base = 1 + panelId * 0.2; 
+  const variation = Math.random() * 2; 
+  const energy = (base + variation).toFixed(2);
 
   return Number(energy);
 }
@@ -41,7 +35,7 @@ app.get("/", (req, res) => {
     });
   }
   res.json({
-    message: "API de Simulação de Energia Solar (curva diária)",
+    message: "API de Simulação de Energia Solar (simplificada)",
     panels,
   });
 });
@@ -54,8 +48,7 @@ app.get("/panel/:id", (req, res) => {
     return res.status(404).json({ error: "Placa não encontrada" });
   }
 
-  const production =
-    panelId === DEFECTIVE_PANEL_ID ? 0 : generateSolarCurve(panelId);
+  const production = generateEnergy(panelId);
 
   res.json({
     id: panelId,
@@ -74,8 +67,7 @@ app.get("/panel/code/:code", (req, res) => {
   if (index === -1) return res.status(404).json({ error: "Placa não encontrada" });
 
   const panelId = index + 1;
-  const production =
-    panelId === DEFECTIVE_PANEL_ID ? 0 : generateSolarCurve(panelId);
+  const production = generateEnergy(panelId);
 
   res.json({
     id: panelId,
