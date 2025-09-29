@@ -16,8 +16,8 @@ function generateEnergy(panelId) {
   if (panelId === DEFECTIVE_PANEL_ID) return 0;
 
   // Geração aleatória entre 1 e 5 kWh
-  const base = 1 + panelId * 0.2; 
-  const variation = Math.random() * 2; 
+  const base = 1 + panelId * 0.2;
+  const variation = Math.random() * 2;
   const energy = (base + variation).toFixed(2);
 
   return Number(energy);
@@ -30,7 +30,8 @@ app.get("/", (req, res) => {
     panels.push({
       id: i,
       code: panelCodes[i - 1], // código de identificação
-      link: `/panel/${i}`,
+      link_id: `/panel/${i}`,
+      link_code: `/${panelCodes[i - 1]}`,
       status: i === DEFECTIVE_PANEL_ID ? "defeituosa" : "ativa",
     });
   }
@@ -59,12 +60,14 @@ app.get("/panel/:id", (req, res) => {
   });
 });
 
-// rota individual por código
-app.get("/panel/code/:code", (req, res) => {
+// rota individual por código (direto na raiz, ex: /PLACA-1)
+app.get("/:code", (req, res) => {
   const { code } = req.params;
   const index = panelCodes.indexOf(code);
 
-  if (index === -1) return res.status(404).json({ error: "Placa não encontrada" });
+  if (index === -1) {
+    return res.status(404).json({ error: "Placa não encontrada" });
+  }
 
   const panelId = index + 1;
   const production = generateEnergy(panelId);
