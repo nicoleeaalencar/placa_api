@@ -15,10 +15,10 @@ const panelCodes = Array.from({ length: NUM_PANELS }, (_, i) => `PLACA-${i + 1}`
 function generateEnergy(panelId) {
   if (panelId === DEFECTIVE_PANEL_ID) return 0;
 
-  // Geração aleatória entre 1 e 5 kWh
-  const base = 1 + panelId * 0.2;
-  const variation = Math.random() * 2;
-  const energy = (base + variation).toFixed(2);
+  // Geração aleatória
+  const base = 0.0075 + panelId * 0.0005; 
+  const variation = Math.random() * 0.002;
+  const energy = (base + variation).toFixed(5);
 
   return Number(energy);
 }
