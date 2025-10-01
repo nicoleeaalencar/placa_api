@@ -16,7 +16,7 @@ function generateEnergy(panelId) {
   if (panelId === DEFECTIVE_PANEL_ID) return 0;
 
   // Geração aleatória
-  const base = 0.0075 + panelId * 0.0005; 
+  const base = 0.0075 + panelId * 0.5; 
   const variation = Math.random() * 0.002;
   const energy = (base + variation).toFixed(5);
 
